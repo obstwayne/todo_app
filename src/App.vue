@@ -1,81 +1,68 @@
 <template>
-  <div id="app">
-    <h1>Todo app</h1>
-    <form @submit.prevent="addTodo">
-      <input type="text" v-model="newTodo" placeholder="Add task" required />
-      <button type="submit">{{ editIndex !== null ? 'Save' : 'Add' }}</button>
-    </form>
-    <ul>
-      <todo-item v-for="(todo, index) in todos" :key="index" :todo="todo" :index="index" @toggle-todo="toggleTodo"
-        @edit-todo="startEditTodo" @removeTodo="removeTodo" />
-    </ul>
+  <div class="app-container">Left side
+    <div class="left-panel">
+      <input type="text" v-model="searchQuery" placeholder="Write some name of project" class="search-input">
+      <h2 class="projects-title">Projects: {{ projects.length }}</h2>
+      <div class="projects-grid">
+        <project-card v-for="project in filteredProjects" :key="project.id" :project="project" @select="selectProject">
+        </project-card>
+      </div>
+      <button @click="showCreateProjectDialog" class="create-button">Create New Project
+      </button>
+    </div>
+
+    <div class="right-panel">Right side
+      <task-panel :tasks="selectedProjectTasks" :searchQuery="searchQuery">
+      </task-panel>
+    </div>
+    <form-dialog v-if="dialogVisible" @close="dialogVisible = false" @create="createProject">
+    </form-dialog>
   </div>
 </template>
 
 <script>
-import TodoItem from './components/TodoItem.vue';
+import ProjectCard from './components/ProjectCard.vue';
+import TaskPanel from './components/TaskPanel.vue';
+import FormDialog from './components/FormDialog.vue';
 
 export default {
-  name: 'App',
   components: {
-    TodoItem
+    ProjectCard, TaskPanel, FormDialog
   },
   data() {
     return {
-      newTodo: '',
-      todos: [],
-      editIndex: null
-    };
+      projects: [],
+      selectedProjectId: null,
+      searchQuery: '',
+      dialogVisible: false,
+    }
+  },
+  computed: {
+    filteredProjects() {
+      return this.projects.filter((project) =>
+        project.title.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
+    },
+    selectedProjectTasks() {
+      const selectedProject = this.projects.find(
+        (p) => p.id === this.selectedProjectId
+      );
+      return selectedProject ? selectedProject.tasks : [];
+    }
   },
   methods: {
-    addTodo() {
-      if (this.newTodo.trim() !== '') {
-        if (this.editIndex !== null) {
-          this.todos[this.editIndex].text = this.newTodo;
-          this.editIndex = null;
-        } else {
-          this.todos.push({ text: this.newTodo, completed: false });
-        }
-        this.newTodo = '';
-        this.saveTodos();
-      }
+    selectProject(projectId) {
+      this.selectedProjectId = projectId;
     },
-    toggleTodo(index) {
-      this.todos[index].completed = !this.todos[index].completed;
-      this.saveTodos();
+    showCreateProjectDialog() {
+      this.dialogVisible = true;
     },
-    startEditTodo(index) {
-      this.newTodo = this.todos[index].text;
-      this.editIndex = index;
-    },
-    removeTodo(index) {
-      this.todos.splice(index, 1);
-      this.saveTodos();
-    },
-    saveTodos() {
-      localStorage.setItem('todos', JSON.stringify(this.todos));
-    },
-    loadTodos() {
-      const savedTodos = localStorage.getItem('todos');
-      if (savedTodos) {
-        this.todos = JSON.parse(savedTodos);
-      }
-    },
-  },
-  created() {
-    this.loadTodos();
+    createProject(newProject) {
+      newProject.id = Date.now();
+      newProject.tasks = [];
+      this.projects.push(newProject);
+      this.dialogVisible = false;
+    }
   }
-};
-
-</script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
 }
-</style>
+</script>
