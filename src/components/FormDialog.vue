@@ -7,9 +7,10 @@
                     class="input-field" />
                 <textarea v-model="newProject.description" placeholder="Project description"
                     class="textarea-field"></textarea>
-                <button type="button" @click="$emit('close')" class="cancel-button">Cancel</button>
-                <button type="submit" class="create-button">Create</button>
-
+                <div class="form-buttons">
+                    <button type="submit" class="create-button">Create</button>
+                    <button type="button" @click.stop="$emit('close')" class="cancel-button">Cancel</button>
+                </div>
             </form>
         </div>
     </div>

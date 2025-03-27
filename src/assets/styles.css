@@ -57,6 +57,10 @@
     cursor: pointer;
   }
 
+  .project-card:hover {
+    background-color: teal;
+  }
+
   .dialog-title {
     font-size: 1.25rem;
     font-weight: 700;
@@ -80,13 +84,10 @@
   }
   
   .cancel-button {
+    margin-top: 1rem;
+    padding: 0.5rem;
     background-color: #e5e7eb;
     color: #000000;
-  }
-  
-  .create-button {
-    background-color: #3b82f6;
-    color: #ffffff;
   }
   
   .dialog {
@@ -108,3 +109,76 @@
     min-width: 300px;
     padding: 20px;
   }
+
+  .project-info {
+    margin-bottom: 20px;
+  }
+  
+  .project-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .project-description {
+    color: #666;
+  }
+  
+  .no-project {
+    text-align: center;
+    color: #999;
+  }
+  
+  .add-task-form {
+    margin-bottom: 20px;
+  }
+  
+  .task-input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  
+  .add-task-button {
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .delete-task-button {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  .cancel-task-button {
+    background-color: #6c757d;
+    color: white;
+  }
+
+  .edit-task-button {
+    background-color: #ffc107;
+    color: black;
+  }
+  
+  .tasks-list {
+    margin-top: 20px;
+  }
+  
+  .task-item {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .form-buttons {
+    display: flex;
+    justify-content: space-between;
+  }
+  

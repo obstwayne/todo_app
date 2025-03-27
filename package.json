@@ -11,7 +11,11 @@
     "@fortawesome/fontawesome-free": "^6.7.2",
     "@tailwindcss/vite": "^4.0.15",
     "core-js": "^3.8.3",
-    "vue": "^3.2.13"
+    "firebase": "^11.5.0",
+    "pinia": "^3.0.1",
+    "pinia-plugin-persistedstate": "^4.2.0",
+    "vue": "^3.2.13",
+    "vuex": "^4.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
