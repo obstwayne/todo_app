@@ -13,7 +13,13 @@
       <!-- real settings modal -->
      <div class="sidebar-footer">
       <div class="sidebar-settings">
-        <button class="settings-modal-btn" @click="$emit('')">Profile Settings</button>
+        <button class="settings-modal-btn"  @click="show = true">Profile Settings</button>
+        <ProfileSettings
+          :visible="show"
+          :initial="userSettings"
+          @save="onSave"
+          @close="show = false"
+    />
       </div>
      </div>
     </div>
@@ -26,11 +32,29 @@
 </template>
 
 <script>
+import ProfileSettings from './UI/ProfileSettings.vue';
 export default {
+  components: { ProfileSettings },
   props: {
     isOpen: {
       type: Boolean,
       required: true,
+    },
+  },
+  data() {
+    return {
+      show: false,
+      userSettings: {
+        username: '',
+        language: 'ru',
+        darkMode: true,
+      },
+    };
+  },
+  methods: {
+    onSave(updated) {
+      console.log('Saved:', updated);
+      this.userSettings = updated;
     },
   },
 };
