@@ -33,6 +33,7 @@
 
 <script>
 import ProfileSettings from './UI/ProfileSettings.vue';
+import { useSettingsStore } from '@/stores/settings';
 export default {
   components: { ProfileSettings },
   props: {
@@ -44,17 +45,24 @@ export default {
   data() {
     return {
       show: false,
-      userSettings: {
-        username: '',
-        language: 'ru',
-        darkMode: true,
-      },
+      // userSettings: {
+      //   username: '',
+      //   language: 'ru',
+      //   darkMode: true,
+      // },
     };
   },
+  setup() {
+    const settingsStore = useSettingsStore();
+    return { settingsStore };
+  },
   methods: {
-    onSave(updated) {
-      console.log('Saved:', updated);
-      this.userSettings = updated;
+    async onSave(updated) {
+      this.settingsStore.username = updated.username;
+      this.settingsStore.language = updated.language;
+      this.settingsStore.theme = updated.darkMode;
+      await this.settingsStore.saveSettings('default');
+      this.show = false;
     },
   },
 };

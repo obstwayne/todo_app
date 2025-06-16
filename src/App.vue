@@ -6,15 +6,21 @@
 
     <!-- left side -->
     <div class="left-panel">
-      <input type="text" v-model="searchQuery" placeholder="Write some name of project" class="search-input">
-      <h2 class="projects-title">Projects ({{ projectsStore.projects.length }})</h2>
-      <div class="projects-grid">
-        <project-card v-for="project in projectsStore.filteredProjects(searchQuery)" :key="project.id"
-          :project="project" @select="projectsStore.selectProject(project.numericId)">
-        </project-card>
+      <div>
+        <h1>Hi, {{ settingsStore.username || 'Guest' }}</h1>
+        <input type="text" v-model="searchQuery" placeholder="Write some name of project" class="search-input">
       </div>
-      <button @click.stop="showCreateProjectDialog" class="create-button">Create New Project
-      </button>
+
+      <div>
+        <h2 class="projects-title">Projects ({{ projectsStore.projects.length }})</h2>
+        <div class="projects-grid">
+          <project-card v-for="project in projectsStore.filteredProjects(searchQuery)" :key="project.id"
+            :project="project" @select="projectsStore.selectProject(project.numericId)">
+          </project-card>
+        </div>
+        <button @click.stop="showCreateProjectDialog" class="create-button">Create New Project
+        </button>
+      </div>
     </div>
 
     <!-- right side -->
@@ -38,6 +44,7 @@
 
 <script>
 import { useProjectsStore } from './stores/projects';
+import { useSettingsStore } from './stores/settings';
 import ProjectCard from './components/ProjectCard.vue';
 import TaskPanel from './components/TaskPanel.vue';
 // import FormDialog from './components/FormDialog.vue';
@@ -61,7 +68,8 @@ export default {
   },
   setup() {
     const projectsStore = useProjectsStore();
-    return { projectsStore }
+    const settingsStore = useSettingsStore();
+    return { projectsStore, settingsStore }
   },
   methods: {
     showCreateProjectDialog() {
@@ -72,8 +80,9 @@ export default {
       this.dialogVisible = false;
     },
   },
-  mounted() {
+  async mounted() {
     this.projectsStore.fetchProjects();
+    this.settingsStore.fetchSettings('default');
   }
 }
 </script>
