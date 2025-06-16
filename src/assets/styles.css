@@ -177,6 +177,17 @@
     justify-content: space-between;
   }
 
+  .task-checkbox {
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+  }
+
+  .done {
+    text-decoration: line-through;
+    color: #888;
+  }
+
   .form-buttons {
     display: flex;
     justify-content: space-between;
