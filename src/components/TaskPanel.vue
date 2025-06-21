@@ -14,7 +14,8 @@
             <button @click="showAddTaskDialog" class="add-task-button">Add Task</button>
             <ul>
                 <li v-for="task in filteredTasks" :key="task.id" class="task-item">
-                    <span>{{ task.text }}</span>
+                    <input type="checkbox" class="task-checkbox" v-model="task.completed" />
+                    <span :class="{ done: task.completed }">{{ task.text }}</span>
                     <button @click="showEditTaskDialog(task)" class="edit-task-button">Edit</button>
                     <button @click="deleteTask(task.id)" class="delete-task-button">Delete</button>
                 </li>
@@ -83,7 +84,7 @@ export default {
         },
         addTask(taskData) {
             if (taskData.text && taskData.text.trim()) {
-                const newTask = { id: Date.now(), text: taskData.text };
+                const newTask = { id: Date.now(), text: taskData.text, completed: false };
                 this.$emit('add-task', newTask);
                 this.showAddTaskModal = false;
             } else {
@@ -95,7 +96,7 @@ export default {
             this.showEditTaskModal = true;
         },
         saveTask(taskData) {
-            if (taskData.text.trim()) {
+            if (taskData.text && taskData.text.trim()) {
                 this.$emit('update-task', { id: this.editingTask.id, text: taskData.text });
                 this.showEditTaskModal = false;
             }
@@ -108,7 +109,7 @@ export default {
             this.showEditProjectModal = true;
         },
         saveProject(projectData) {
-            if (projectData.title.trim()) {
+            if (projectData.title && projectData.title.trim()) {
                 this.$emit('update-project', projectData);
                 this.showEditProjectModal = false;
             }

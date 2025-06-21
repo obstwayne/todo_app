@@ -4,6 +4,8 @@ import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
 import App from './App.vue'
 import '@fortawesome/fontawesome-free/css/all.css';
 import './assets/styles.css';
+import './assets/leftPanel.css';
+import './assets/rightPanel.css';
 
 const app = createApp(App);
 const pinia = createPinia();
