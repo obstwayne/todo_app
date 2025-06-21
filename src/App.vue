@@ -6,12 +6,20 @@
 
     <!-- left side -->
     <div class="left-panel">
-      <div>
-        <h1>Hi, {{ settingsStore.username || 'Guest' }}</h1>
-        <input type="text" v-model="searchQuery" placeholder="Write some name of project" class="search-input">
+      <div class="left-panel__top">
+        <div class="meeting">
+          <h1>Hi, {{ settingsStore.username || 'Guest' }}</h1>
+          <h3>Welcome back to the workspace, nice to meet u!</h3>
+        </div>
+        <div class="search-panel">
+          <div class="input-with-icon">
+            <SearchIcon class="w-5 h-5 text-gray-600" />
+            <input type="text" v-model="searchQuery" placeholder="Write some name of project" class="search-input">
+          </div>
+        </div>
       </div>
 
-      <div>
+      <div class="left-panel__bottom">
         <h2 class="projects-title">Projects ({{ projectsStore.projects.length }})</h2>
         <div class="projects-grid">
           <project-card v-for="project in projectsStore.filteredProjects(searchQuery)" :key="project.id"
@@ -50,10 +58,11 @@ import TaskPanel from './components/TaskPanel.vue';
 // import FormDialog from './components/FormDialog.vue';
 import ModalForm from './components/UI/ModalForm.vue';
 import SideBarItem from './components/SideBarItem.vue';
+import SearchIcon from './components/icons/search.svg';
 
 export default {
   components: {
-    ProjectCard, TaskPanel, ModalForm, SideBarItem
+    ProjectCard, TaskPanel, ModalForm, SideBarItem, SearchIcon
   },
   data() {
     return {
