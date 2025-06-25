@@ -1,8 +1,8 @@
 <template>
     <div>
-        <div v-if="project" class="project-info">
-            <div class="project-title">{{ project.title }}</div>
-            <div class="project-description">{{ project.description || 'No description' }}</div>
+        <div v-if="props.project" class="project-info">
+            <div class="project-title">{{ props.project.title }}</div>
+            <div class="project-description">{{ props.project.description || 'No description' }}</div>
             <button @click="showEditProjectDialog" class="edit-project-button">Edit Project</button>
             <button @click="deleteProject" class="delete-project-button">Delete Project</button>
         </div>
@@ -41,85 +41,81 @@
     </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed } from 'vue';
 import ModalForm from './UI/ModalForm.vue';
 
-export default {
-    components: {
-        ModalForm
-    },
-    props: {
-        project: Object,
-        tasks: Array,
-        searchQuery: String
-    },
-    data() {
-        return {
-            showAddTaskModal: false,
-            showEditTaskModal: false,
-            showEditProjectModal: false,
-            editingTask: { text: '' },
-            editedProject: { title: '', description: '' },
-            taskFields: [
-                { name: 'text', label: 'Task', type: 'text', placeholder: 'Enter task', required: true },
-            ],
-            projectFields: [
-                { name: 'title', label: 'Project Title', type: 'text', placeholder: 'Enter project title', required: true },
-                { name: 'description', label: 'Description', type: 'textarea', placeholder: 'Enter project description', required: false },
-            ],
-        };
-    },
-    computed: {
-        filteredTasks() {
-            if (!Array.isArray(this.tasks)) return [];
-            return this.tasks.filter((task) => {
-                if (!task || typeof task.text !== 'string') return false;
-                return task.text.toLowerCase().includes((this.searchQuery || '').toLowerCase());
-            });
-        }
-    },
-    methods: {
-        showAddTaskDialog() {
-            this.showAddTaskModal = true;
-        },
-        addTask(taskData) {
-            if (taskData.text && taskData.text.trim()) {
-                const newTask = { id: Date.now(), text: taskData.text, completed: false };
-                this.$emit('add-task', newTask);
-                this.showAddTaskModal = false;
-            } else {
-                return;
-            }
-        },
-        showEditTaskDialog(task) {
-            this.editingTask = { text: task.text, id: task.id };
-            this.showEditTaskModal = true;
-        },
-        saveTask(taskData) {
-            if (taskData.text && taskData.text.trim()) {
-                this.$emit('update-task', { id: this.editingTask.id, text: taskData.text });
-                this.showEditTaskModal = false;
-            }
-        },
-        deleteTask(taskId) {
-            this.$emit('remove-task', taskId);
-        },
-        showEditProjectDialog() {
-            this.editedProject = { ...this.project };
-            this.showEditProjectModal = true;
-        },
-        saveProject(projectData) {
-            if (projectData.title && projectData.title.trim()) {
-                this.$emit('update-project', projectData);
-                this.showEditProjectModal = false;
-            }
-        },
-        deleteProject() {
-            if (confirm('Are you sure you want to delete this project?')) {
-                this.$emit('remove-project', this.project.numericId);
-            }
-        },
-    },
+const props = defineProps({
+    project: Object,
+    tasks: Array,
+    searchQuery: String
+});
+const showAddTaskModal = ref(false);
+const showEditTaskModal = ref(false);
+const showEditProjectModal = ref(false);
+const editingTask = ref({ text: '' });
+const editedProject = ref({ title: '', description: '' });
+const taskFields = ref([
+    { name: 'text', label: 'Task', type: 'text', placeholder: 'Enter task', required: true }
+]);
+const projectFields = ref([
+    { name: 'title', label: 'Project Title', type: 'text', placeholder: 'Enter project title', required: true },
+    { name: 'description', label: 'Description', type: 'textarea', placeholder: 'Enter project description', required: false },
+]);
+
+//emit
+const emit = defineEmits(['add-task', 'update-task', 'remove-task', 'update-project', 'remove-project']);
+
+// computed
+const filteredTasks = computed(() => {
+    if (!Array.isArray(props.tasks)) return [];
+    return props.tasks.filter((task) => {
+        if (!task || typeof task.text !== 'string') return false;
+        return task.text.toLowerCase().includes((props.searchQuery || '').toLowerCase());
+    });
+})
+
+// methods
+const showAddTaskDialog = () => {
+    showAddTaskModal = true;
+};
+const addTask = (taskData) => {
+    if (taskData.text && taskData.text.trim()) {
+        const newTask = { id: Date.now(), text: taskData.text, completed: false };
+        emit('add-task', newTask);
+        showAddTaskModal = false;
+    } else {
+        return;
+    }
+};
+const showEditTaskDialog = (task) => {
+    editingTask = { text: task.text, id: task.id };
+    showEditTaskModal = true;
+};
+const saveTask = (taskData) => {
+    if (taskData.text && taskData.text.trim()) {
+        emit('update-task', { id: editingTask.id, text: taskData.text });
+        showEditTaskModal = false;
+    }
+};
+
+const deleteTask = (taskId) => {
+    emit('remove-task', taskId);
+};
+const showEditProjectDialog = () => {
+    editedProject = { ...props.project };
+    showEditProjectModal = true;
+};
+const saveProject = (projectData) => {
+    if (projectData.title && projectData.title.trim()) {
+        emit('update-project', projectData);
+        showEditProjectModal = false;
+    }
+};
+const deleteProject = () => {
+    if (confirm('Are you sure you want to delete this project?')) {
+        emit('remove-project', props.project.numericId);
+    }
 };
 
 </script>

@@ -1,17 +1,14 @@
 <template>
-    <div class="project-card"
-        @click="$emit('select', project.id)">
-        <div>{{ project.title }}</div>
+    <div class="project-card" @click="$emit('select', project.id)">
+        <div>{{ props.project.title }}</div>
     </div>
 </template>
 
-<script>
-export default {
-    props: {
-        project: {
-            type: Object,
-            required: true,
-        }
-    },
-}
+<script setup>
+const props = defineProps({
+    project: {
+        type: Object,
+        required: true,
+    }
+});
 </script>

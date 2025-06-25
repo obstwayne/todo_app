@@ -1,9 +1,9 @@
 <template>
   <div>
-    <div class="sidebar" :class="{ 'sidebar--open': isOpen }">
+    <div class="sidebar" :class="{ 'sidebar--open': props.isOpen }">
       <div class="sidebar-header">
         <h3>Settings</h3>
-        <button class="close-btn" @click="$emit('close')">✖</button>
+        <button class="close-btn" @click="emit('close')">✖</button>
       </div>
       <div class="sidebar-content">
         <!-- content -->
@@ -11,60 +11,54 @@
       </div>
 
       <!-- real settings modal -->
-     <div class="sidebar-footer">
-      <div class="sidebar-settings">
-        <button class="settings-modal-btn"  @click="show = true">Profile Settings</button>
-        <ProfileSettings
-          :visible="show"
-          :initial="userSettings"
-          @save="onSave"
-          @close="show = false"
-    />
+      <div class="sidebar-footer">
+        <div class="sidebar-settings">
+          <button class="settings-modal-btn" @click="show = true">Profile Settings</button>
+          <ProfileSettings :visible="show" :initial="userSettings" @save="onSave" @close="show = false" />
+        </div>
       </div>
-     </div>
     </div>
-    
+
     <!-- page hover -->
-    <div v-if="isOpen" class="sidebar-overlay" @click="$emit('close')">
+    <div v-if="props.isOpen" class="sidebar-overlay" @click="emit('close')">
     </div>
-    
+
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed } from 'vue';
 import ProfileSettings from './UI/ProfileSettings.vue';
 import { useSettingsStore } from '@/stores/settings';
-export default {
-  components: { ProfileSettings },
-  props: {
-    isOpen: {
-      type: Boolean,
-      required: true,
-    },
+
+const props = defineProps({
+  isOpen: {
+    type: Boolean,
+    required: true,
   },
-  data() {
-    return {
-      show: false,
-      // userSettings: {
-      //   username: '',
-      //   language: 'ru',
-      //   darkMode: true,
-      // },
-    };
-  },
-  setup() {
-    const settingsStore = useSettingsStore();
-    return { settingsStore };
-  },
-  methods: {
-    async onSave(updated) {
-      this.settingsStore.username = updated.username;
-      this.settingsStore.language = updated.language;
-      this.settingsStore.theme = updated.darkMode;
-      await this.settingsStore.saveSettings('default');
-      this.show = false;
-    },
-  },
+});
+
+//emits
+const emit = defineEmits(['close']);
+
+const show = ref(false);
+
+// setup
+const settingsStore = useSettingsStore();
+
+const userSettings = computed(() => ({
+  username: settingsStore.username || 'username',
+  language: settingsStore.language,
+  darkMode: settingsStore.darkMode
+}));
+
+// methods
+const onSave = async (updated) => {
+  settingsStore.username = updated.username;
+  settingsStore.language = updated.language;
+  settingsStore.theme = updated.darkMode;
+  await settingsStore.saveSettings('default');
+  show.value = false;
 };
 </script>
 
@@ -78,7 +72,7 @@ export default {
   box-sizing: border-box;
   padding: 20px;
   background: #fff;
-  box-shadow: 2px 0 10px rgba(0,0,0,0.15);
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15);
   transition: left .3s ease;
   z-index: 1000;
 
@@ -106,10 +100,6 @@ export default {
   border-top: 1px solid #ddd;
 }
 
-.sidebar-settings {
-  /* padding-top: 10px; */
-}
-
 .settings-modal-btn {
   display: block;
   width: 100%;
@@ -121,6 +111,7 @@ export default {
   cursor: pointer;
   transition: background-color .2s;
 }
+
 .settings-modal-btn:hover {
   background-color: #e0e0e0;
 }
