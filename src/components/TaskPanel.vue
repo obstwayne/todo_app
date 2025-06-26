@@ -77,25 +77,25 @@ const filteredTasks = computed(() => {
 
 // methods
 const showAddTaskDialog = () => {
-    showAddTaskModal = true;
+    showAddTaskModal.value = true;
 };
 const addTask = (taskData) => {
     if (taskData.text && taskData.text.trim()) {
         const newTask = { id: Date.now(), text: taskData.text, completed: false };
         emit('add-task', newTask);
-        showAddTaskModal = false;
+        showAddTaskModal.value = false;
     } else {
         return;
     }
 };
 const showEditTaskDialog = (task) => {
-    editingTask = { text: task.text, id: task.id };
-    showEditTaskModal = true;
+    editingTask.value = { text: task.text, id: task.id };
+    showEditTaskModal.value = true;
 };
 const saveTask = (taskData) => {
     if (taskData.text && taskData.text.trim()) {
-        emit('update-task', { id: editingTask.id, text: taskData.text });
-        showEditTaskModal = false;
+        emit('update-task', { id: editingTask.value.id, text: taskData.text });
+        showEditTaskModal.value = false;
     }
 };
 
@@ -103,13 +103,13 @@ const deleteTask = (taskId) => {
     emit('remove-task', taskId);
 };
 const showEditProjectDialog = () => {
-    editedProject = { ...props.project };
-    showEditProjectModal = true;
+    editedProject.value = { ...props.project };
+    showEditProjectModal.value = true;
 };
 const saveProject = (projectData) => {
     if (projectData.title && projectData.title.trim()) {
         emit('update-project', projectData);
-        showEditProjectModal = false;
+        showEditProjectModal.value = false;
     }
 };
 const deleteProject = () => {

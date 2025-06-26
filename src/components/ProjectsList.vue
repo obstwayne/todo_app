@@ -1,5 +1,5 @@
 <template>
-    <div v-if="props.visible" class="modal-overlay">
+    <div v-if="props.visible" class="modal-overlay" @click="closeWhenClickOutside">
         <div class="modal-content">
             <div class="modal-header">
                 <h2>All Projects</h2>
@@ -7,9 +7,8 @@
             </div>
             <div class="modal-body">
                 <div class="project-list">
-                <div class="project-card" v-for="project in props.projects" :key="project.id"
-                    @click="emit('select', project.numericId); emit('close')">
-                    
+                    <div class="project-card" v-for="project in props.projects" :key="project.id"
+                        @click="emit('select', project.numericId)">
                         <div>{{ project.title }}</div>
                     </div>
                 </div>
@@ -32,13 +31,18 @@ const props = defineProps({
 
 const emit = defineEmits(['close', 'select']);
 
+const closeWhenClickOutside = (event) => {
+    if (event.target.classList.contains('modal-overlay')) {
+        emit('close');
+    }
+}
 
 </script>
 
 <style scoped>
-.projects-list {
+.project-list {
     display: grid;
-    grid-template-columns: repeat(3, 8rem);
+    grid-template-columns: repeat(5, 8rem);
     gap: 2rem;
     /* margin-top: 2rem; */
     justify-content: center;
@@ -58,7 +62,8 @@ const emit = defineEmits(['close', 'select']);
 }
 
 .project-card:hover {
-    background-color: teal;
+    background-color: rgb(126, 120, 120);
+    color: #333;
 }
 
 .modal-overlay {
@@ -75,7 +80,7 @@ const emit = defineEmits(['close', 'select']);
 }
 
 .modal-content {
-    background: white;
+    background: rgb(77, 75, 75);
     border-radius: 8px;
     width: 80%;
     max-width: 800px;
@@ -85,6 +90,7 @@ const emit = defineEmits(['close', 'select']);
 }
 
 .modal-header {
+    color: #ddd;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -93,10 +99,18 @@ const emit = defineEmits(['close', 'select']);
 }
 
 .close-btn {
-  background: none;
-  border: none;
-  font-size: 1.2rem;
-  cursor: pointer;
+    color: #ddd;
+    padding: 0.5rem;
+    background: none;
+    border: 1px solid #333;
+    border-radius: 1rem;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.close-btn:hover {
+    /* background-color: rgb(126, 120, 120); */
+    /* color: #333; */
 }
 
 .modal-body {

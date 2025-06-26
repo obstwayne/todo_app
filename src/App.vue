@@ -30,16 +30,17 @@
       </div>
 
       <div class="left-panel__bottom">
-        <h2 class="projects-title">Projects ({{ projectsCount }})</h2>
+        <div class="projects-title-and-add-button">
+          <h2 class="projects-title">Projects ({{ projectsCount }})</h2>
+          <button @click.stop="showCreateProjectDialog" class="create-button">Create New Project</button>
+        </div>
         <div class="projects-grid">
           <project-card v-for="project in projectsStore.filteredProjects(searchQuery).slice(0, 8)" :key="project.id"
             :project="project" @select="projectsStore.selectProject(project.numericId)" class="">
           </project-card>
           <button v-if="projectsStore.filteredProjects(searchQuery).length > 0" class="view-all-projects"
-            @click="showAllProjects = true">11</button>
+            @click="showAllProjects = true">Show {{ projectsCount - 8 }}+ more</button>
         </div>
-        <button @click.stop="showCreateProjectDialog" class="create-button">Create New Project
-        </button>
       </div>
     </div>
 
@@ -55,9 +56,8 @@
       :submit-button-text="'Create'" @submit="createProject" @close="dialogVisible = false">
     </modal-form>
 
-    <projects-list :visible="showAllProjects"
-      :projects="projectsStore.projects" @close="showProjectsListModal = false"
-      @select="projectsStore.selectProject"></projects-list>
+    <projects-list :visible="showAllProjects" :projects="projectsStore.projects" @close="showAllProjects = false"
+      @select="selectProjectFromModal"></projects-list>
   </div>
 </template>
 
@@ -97,6 +97,11 @@ const createProject = async (newProject) => {
   dialogVisible.value = false;
 };
 
+const selectProjectFromModal = (numericId) => {
+  projectsStore.selectProject(numericId);
+  showAllProjects.value = false;
+}
+
 onMounted(async () => {
   try {
     await Promise.all([
@@ -124,5 +129,20 @@ onMounted(async () => {
   font-size: 18px;
   cursor: pointer;
   border-radius: 4px;
+}
+
+.view-all-projects {
+  padding: 2rem;
+  border-radius: 0.5rem;
+  color: #ffffff;
+  text-align: center;
+  cursor: pointer;
+  border: 1px solid #989ea5;
+  background-color: #333;
+  transition: background-color 0.2s;
+}
+
+.view-all-projects:hover {
+  background-color: rgb(40, 167, 103);
 }
 </style>

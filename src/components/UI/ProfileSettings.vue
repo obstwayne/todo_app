@@ -64,7 +64,7 @@ watch(() => props.initial, (newVal) => {
 );
 // methods
 const onSubmit = () => {
-  emit("save", { ...this.form });
+  emit("save", { ...form });
   close();
 };
 const close = () => {
